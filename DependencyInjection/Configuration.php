@@ -80,7 +80,6 @@ class Configuration implements ConfigurationInterface
                           ->end()
                         ->end()
                     ->end()
-                ->end()
                 ->validate()
                     ->ifTrue(function($v) {
                                 return $v['driver']['useSsl'] && $v['driver']['useStartTls'];

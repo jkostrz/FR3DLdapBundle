@@ -124,15 +124,17 @@ class LdapManager implements LdapManagerInterface
     {
         $filter = isset($this->params['role']['filter']) ? $this->params['role']['filter'] : '';
 
-        $entries = $this->connection->search(
+        $uid = explode(',', $entry['dn']);
+        $uid = substr($uid[0], 4);
+
+        $entries = $this->driver->search(
             $this->params['role']['baseDn'],
-            sprintf('(&%s(%s=%s))', $filter, $this->params['role']['userAttribute'], $entry['dn']),
-            array($this->params['role']['nameAttribute'])
+            sprintf('%s=%s', $this->params['role']['userDnAttribute'], $uid)
         );
 
         for ($i = 0; $i < $entries['count']; $i++) {
             $user->addRole(sprintf('ROLE_%s',
-               self::slugify($entries[$i][$this->params['role']['nameAttribute']][0])
+                self::slugify($entries[$i][$this->params['role']['nameAttribute']][0])
             ));
         }
     }
@@ -219,3 +221,4 @@ class LdapManager implements LdapManagerInterface
         return (count($values) == 1 && array_key_exists(0, $values)) ? $values[0] : $values;
     }
 }
+
